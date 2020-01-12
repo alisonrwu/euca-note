@@ -71,13 +71,15 @@ class LoginPage extends React.Component {
     });
   }
 
-  handleLogin() {
+  handleLogin(e) {
+    e.preventDefault();
     let email = this.refs.loginEmailField.value;
     let password = this.refs.loginPasswordField.value;
     this.signInEmail(email, password);
   }
 
-  handleRegister() {
+  handleRegister(e) {
+    e.preventDefault();
     let self = this;
     let email = this.refs.registerEmailField.value;
     let password = this.refs.registerPasswordField.value;
@@ -146,7 +148,7 @@ class LoginPage extends React.Component {
           ) : this.state.displayMode === LoginStateEnum.login ? (
             <Card.Body>
               <Button className="mb-3" variant="outline-primary" onClick={this.showDefault}><IoIosArrowBack/></Button>
-              <Form>
+              <Form onSubmit={this.handleLogin}>
                 <Form.Group controlId="formBasicEmail">
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
@@ -167,7 +169,7 @@ class LoginPage extends React.Component {
                     placeholder="Password"
                   />
                 </Form.Group>
-                <Button variant="primary" onClick={this.handleLogin}>
+                <Button variant="primary" type="submit">
                   Login
                 </Button>
               </Form>
@@ -175,7 +177,7 @@ class LoginPage extends React.Component {
           ) : (
             <Card.Body>
               <Button className="mb-3" variant="outline-primary" onClick={this.showDefault}><IoIosArrowBack/></Button>
-              <Form>
+              <Form onSubmit={this.handleRegister}>
                 <Form.Group controlId="formBasicEmail">
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
@@ -204,7 +206,7 @@ class LoginPage extends React.Component {
                     placeholder="Password"
                   />
                 </Form.Group>
-                <Button variant="primary" onClick={this.handleRegister}>
+                <Button variant="primary" type="submit">
                   Register
                 </Button>
               </Form>
