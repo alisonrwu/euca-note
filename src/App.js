@@ -1,17 +1,12 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import "./App.css";
 import { Navbar, NavItem } from "react-bootstrap";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import NotePage from './pages/NotePage';
-import NotesPage from './pages/NotesPage';
-import LoginPage from './pages/LoginPage';
+import "bootstrap/dist/css/bootstrap.min.css";
+import NotePage from "./pages/NotePage";
+import NotesPage from "./pages/NotesPage";
+import LoginPage from "./pages/LoginPage";
 
 import * as firebase from "firebase/app";
 
@@ -30,37 +25,42 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.default.initializeApp(firebaseConfig);
 
-function App() {
-  return (
-    <Router>
-      <div className="App">
-        <nav>
-          <ul>
-            <li>
-              <Link to="/notes">Notes</Link>
-            </li>
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-          </ul>
-        </nav>
-        <body>
-          <Switch>
-            <Route path="/login">
-              <LoginPage />
-            </Route>
-            <Route path="/notes">
-              <NotesPage />
-            </Route>
-            <Route path="/">
-              <NotePage />
-            </Route>
-          </Switch>
-        </body>
-      </div>
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+  }
 
-    </Router>
-  );
+  render() {
+    return (
+      <Router>
+        <div className="App">
+          <nav>
+            <ul>
+              <li>
+                <Link to="/notes">Notes</Link>
+              </li>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+            </ul>
+          </nav>
+          <body>
+            <Switch>
+              <Route path="/login">
+                <LoginPage />
+              </Route>
+              <Route path="/notes">
+                <NotesPage />
+              </Route>
+              <Route path="/">
+                <NotePage />
+              </Route>
+            </Switch>
+          </body>
+        </div>
+      </Router>
+    );
+  }
 }
 
 export default App;
