@@ -81,7 +81,7 @@ class NotesPage extends React.Component {
             timestamp: Date.now(),
             uuid: generateUUID(),
             tags:
-              idx % 2 == 0
+              idx % 2 === 0
                 ? [
                     {
                       name: "a",
@@ -120,7 +120,7 @@ class NotesPage extends React.Component {
   }
 
   openNote(note) {
-    this.props.history.push("/note/" + note.uuid);
+    this.props.history.push("/" + note.uuid);
   }
 
   componentDidMount() {
@@ -189,7 +189,7 @@ class NotesPage extends React.Component {
                 <Col className="col-sm-4">
                   <Card className="m-3">
                     <Card.Title className="m-4">
-                      {this.convertDeltaToHTML(n.title)}
+                      {n.title}
                     </Card.Title>
                     <Card.Body className="m-2">
                       <div onClick={() => this.openNote(n)}>

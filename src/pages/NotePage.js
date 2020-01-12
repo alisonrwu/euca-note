@@ -59,7 +59,7 @@ class NotePage extends React.Component {
       let self = this;
       firebase.default
         .database()
-        .ref("/users/" + uid + "/" + this.noteId)
+        .ref("/users/" + uid + "/notes/" + this.noteId)
         .once("value", function(data) {
           if (data === null || data.val() === null || data.val().writeId === self.writeId) {
             return;
@@ -89,15 +89,17 @@ class NotePage extends React.Component {
       console.log("Writing delta:\n" + JSON.stringify(delta));
       firebase.default
         .database()
-        .ref("/users/" + uid + "/" + this.noteId)
+        .ref("/users/" + uid + "/notes/" + this.noteId)
         .transaction(function(currentValue) {
           if (currentValue == null) {
             self.writeId = generateUUID();
             return {
               timestamp: Date.now(),
+              title: Date.now(),
               body: new Delta(delta.ops),
               uuid: self.noteId,
               writeId: self.writeId,
+              tags: [], //TODO live tags
             };
           }
           let res = new Delta(currentValue.body.ops).compose(delta);
