@@ -1,7 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-
+import { Navbar, NavItem } from "react-bootstrap";
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,29 +17,12 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <nav>
-          <ul>
-            <li>
-              <Link to="/notes">Notes</Link>
-            </li>
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-          </ul>
-        </nav>
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+        <header>
+          <Navbar bg="light" expand="sm">
+            <NavItem><Link to="/login">Login</Link></NavItem>
+            <NavItem><Link to="/notes">Notes</Link></NavItem>
+            <NavItem><Link to="/">Write</Link></NavItem>
+          </Navbar>
         </header>
         <body>
           <Switch>
