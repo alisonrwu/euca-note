@@ -17,17 +17,6 @@ import { MdClear } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { generateUUID } from "../helpers/uuid";
 
-const PillVariants = [
-  "primary",
-  "secondary",
-  "success",
-  "danger",
-  "warning",
-  "info",
-  "light",
-  "dark"
-];
-
 let quill = null;
 class NotesPage extends React.Component {
   constructor(props) {
@@ -59,73 +48,12 @@ class NotesPage extends React.Component {
     }
   }
 
-  writeUserData() {
-    console.log("Writing");
-    let user = firebase.default.auth().currentUser;
-    if (user != null) {
-      let uid = user.uid;
-      let data = ["hello", "bello", "mello"];
-      console.log(
-        PillVariants[Math.floor(Math.random() * PillVariants.length)]
-      );
-      console.log(
-        PillVariants[Math.floor(Math.random() * PillVariants.length)]
-      );
-      data.forEach((n, idx) => {
-        firebase.default
-          .database()
-          .ref("/users/" + uid + "/notes")
-          .push({
-            title: n,
-            body: n,
-            timestamp: Date.now(),
-            uuid: generateUUID(),
-            tags:
-              idx % 2 === 0
-                ? [
-                    {
-                      name: "a",
-                      color:
-                        PillVariants[
-                          Math.floor(Math.random() * PillVariants.length)
-                        ]
-                    },
-                    {
-                      name: "b",
-                      color:
-                        PillVariants[
-                          Math.floor(Math.random() * PillVariants.length)
-                        ]
-                    },
-                    {
-                      name: "c",
-                      color:
-                        PillVariants[
-                          Math.floor(Math.random() * PillVariants.length)
-                        ]
-                    }
-                  ]
-                : [
-                    {
-                      name: "a",
-                      color:
-                        PillVariants[
-                          Math.floor(Math.random() * PillVariants.length)
-                        ]
-                    }
-                  ]
-          });
-      });
-    }
-  }
-
   openNote(note) {
     this.props.history.push("/" + note.uuid);
   }
 
   componentDidMount() {
     quill = new Quill("#hidden-editor");
-    this.writeUserData();
     this.loadNotes();
   }
 
@@ -147,8 +75,12 @@ class NotesPage extends React.Component {
       displayedNotes: this.state.notes.filter(n => {
         return (
           opts == null ||
-          (opts.tag && n.tags.map(t => t.name).includes(opts.tag)) ||
-          (opts.text && n.body.beginsWith(opts.text))
+          (opts.tag &&
+            n
+              .val()
+              .tags.map(t => t.name)
+              .includes(opts.tag)) ||
+          (opts.text && n.val().body.beginsWith(opts.text))
         );
       })
     });
@@ -159,15 +91,17 @@ class NotesPage extends React.Component {
   }
 
   render() {
+    console.log(this.state.displayedNotes);
     return (
       <div>
+        {this.state.displayedNotes.length != this.state.notes.length && (
+          <Button className="m-4" onClick={() => this.filterNotes(null)}>
+            <MdClear />
+            &nbsp;Clear Filter
+          </Button>
+        )}
         <Container>
           <Row className="justify-content-md-center">
-            {this.state.displayedNotes.length > 0 && (
-              <Button onClick={() => this.filterNotes(null)}>
-                <MdClear />
-              </Button>
-            )}
             {this.state.displayedNotes.length === 0 ? (
               <Card className="m-5">
                 <Card.Body>
@@ -188,24 +122,25 @@ class NotesPage extends React.Component {
               this.state.displayedNotes.map(n => (
                 <Col className="col-sm-4">
                   <Card className="m-3">
-                    <Card.Title className="m-4">
-                      {n.title}
-                    </Card.Title>
+                    <Card.Title className="m-4">{n.title}</Card.Title>
                     <Card.Body className="m-2">
-                      <div onClick={() => this.openNote(n)}>
-                        {this.truncate(this.convertDeltaToHTML(n.body))}
+                      <div onClick={() => this.openNote(n.val())}>
+                        {this.truncate(this.convertDeltaToHTML(n.val().body))}
                       </div>
                       <footer className="mt-3">
-                        {n.tags.map((t) => (
-                          <Button
-                            variant="outline-light"
-                            onClick={() => this.filterNotes({ tag: t.name })}
-                          >
-                            <Badge className="m-1" pill variant={t.color}>
-                              {t.name}
-                            </Badge>
-                          </Button>
-                        ))}
+                        {n.val().tags &&
+                          n.val().tags.map(t => (
+                            <Button
+                              variant="outline-light"
+                              onClick={() => this.filterNotes({ tag: t.name })}
+                            >
+                              <h5>
+                                <Badge className="m-1" pill variant={t.color}>
+                                  {t.name}
+                                </Badge>
+                              </h5>
+                            </Button>
+                          ))}
                       </footer>
                     </Card.Body>
                   </Card>

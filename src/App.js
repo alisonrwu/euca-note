@@ -8,6 +8,9 @@ import NotePage from "./pages/NotePage";
 import NotesPage from "./pages/NotesPage";
 import LoginPage from "./pages/LoginPage";
 
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
@@ -15,6 +18,7 @@ import { IconContext } from "react-icons";
 import { FiEdit2 } from "react-icons/fi";
 import { MdPersonOutline } from "react-icons/md";
 import { FaRegListAlt } from "react-icons/fa";
+import { FaEllipsisV } from "react-icons/fa";
 
 // Set up firebase
 const firebaseConfig = {
@@ -36,10 +40,13 @@ class App extends React.Component {
     super(props);
     this.state = {
       notes: [],
-      notesMapping: {}
+      notesMapping: {},
+      showAbout: false,
     };
     this.setupNotes = this.setupNotes.bind(this);
     this.loadNotes = this.loadNotes.bind(this);
+    this.handleOptions = this.handleOptions.bind(this);
+    this.handleAboutClose = this.handleAboutClose.bind(this);
   }
 
   loadNotes() {
@@ -97,6 +104,14 @@ class App extends React.Component {
     });
   }
 
+  handleOptions() {
+    this.setState({showAbout: true});
+  }
+
+  handleAboutClose() {
+    this.setState({showAbout: false});
+  }
+
   render() {
     return (
       <Router>
@@ -110,6 +125,7 @@ class App extends React.Component {
             </IconContext.Provider>}
             <IconContext.Provider value={{ size: "1.4em", className: "global-class-name" }}>
             <Nav.Link href="/"><FiEdit2/></Nav.Link>
+            <Nav.Link onClick={this.handleOptions}><FaEllipsisV/></Nav.Link>
             </IconContext.Provider>
           </Navbar>
           <body className="Switch">
@@ -121,10 +137,21 @@ class App extends React.Component {
                 <NotesPage notes={this.state.notes} />
               </Route>
               <Route path="/:noteId?">
-                <NotePage />
+                <NotePage notes={this.state.notes} />
               </Route>
             </Switch>
           </body>
+          <Modal show={this.state.showAbout} onHide={this.handleAboutClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>About</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>PWA apps are coool</Modal.Body>
+            <Modal.Footer>
+              <Button variant="primary" onClick={this.handleAboutClose}>
+                ok
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
       </Router>
     );
