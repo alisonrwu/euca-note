@@ -121,7 +121,7 @@ class App extends React.Component {
                 <NotesPage notes={this.state.notes} />
               </Route>
               <Route path="/:noteId?">
-                <NotePage />
+                <NotePage notes={this.state.notes} />
               </Route>
             </Switch>
           </body>

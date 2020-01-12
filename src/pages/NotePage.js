@@ -10,6 +10,10 @@ import "firebase/database";
 import {generateUUID} from "../helpers/uuid";
 import { withRouter } from "react-router-dom";
 
+import Button from "react-bootstrap/Button";
+import { IconContext } from "react-icons";
+import { AiOutlineDelete } from "react-icons/ai";
+
 let quill = null;
 class NotePage extends React.Component {
   constructor(props) {
@@ -18,6 +22,7 @@ class NotePage extends React.Component {
     this.timer = null;
     this.writeDelta = this.writeDelta.bind(this);
     this.fetchRemoteDeltas = this.fetchRemoteDeltas.bind(this);
+    this.deleteNote = this.deleteNote.bind(this);
 
     this.modules = {
       toolbar: [
@@ -59,7 +64,7 @@ class NotePage extends React.Component {
       let self = this;
       firebase.default
         .database()
-        .ref("/users/" + uid + "/" + this.noteId)
+        .ref("/users/" + uid + "/notes/" + this.noteId)
         .once("value", function(data) {
           if (data === null || data.val() === null || data.val().writeId === self.writeId) {
             return;
@@ -89,15 +94,17 @@ class NotePage extends React.Component {
       console.log("Writing delta:\n" + JSON.stringify(delta));
       firebase.default
         .database()
-        .ref("/users/" + uid + "/" + this.noteId)
+        .ref("/users/" + uid + "/notes/" + this.noteId)
         .transaction(function(currentValue) {
           if (currentValue == null) {
             self.writeId = generateUUID();
             return {
               timestamp: Date.now(),
+              title: Date.now(),
               body: new Delta(delta.ops),
               uuid: self.noteId,
               writeId: self.writeId,
+              tags: [], //TODO live tags
             };
           }
           let res = new Delta(currentValue.body.ops).compose(delta);
@@ -105,6 +112,24 @@ class NotePage extends React.Component {
           currentValue.body = res;
           return currentValue;
         });
+    }
+  }
+
+  deleteNote() {
+    console.log("deleteNote()");
+    if (this.noteId == null) {
+      this.props.history.push("/notes");
+      return;
+    }
+    let user = firebase.default.auth().currentUser;
+    if (user != null) {
+      let uid = user.uid;
+      console.log("Deleting note");
+      let notesRef = firebase.default
+        .database()
+        .ref('/users/'+uid+'/notes'+this.noteId)
+        .remove();
+      quill.setText("");
     }
   }
 
@@ -140,6 +165,9 @@ class NotePage extends React.Component {
           modules={this.modules}
           formats={this.formats}
         />
+        <IconContext.Provider value={{ size: "1.4em", className: "global-class-name" }}>
+          <Button variant="link" onClick={this.deleteNote}><AiOutlineDelete/></Button>
+        </IconContext.Provider>
       </div>
     );
   }

@@ -20,7 +20,14 @@ html, #body, #root, .App {
   height: 91%
 }
 
+.editor {
+  margin: 10px;
+}
 
 .quill {
   height: '100%';
+}
+
+.hidden {
+  visibility: hidden;
 }
