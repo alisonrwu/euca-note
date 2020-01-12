@@ -48,10 +48,10 @@ class App extends React.Component {
     if (user != null) {
       let uid = user.uid;
       let notesRef = firebase.default.database().ref('/users/'+uid+'/notes');
-      
+      let self = this;
       notesRef.on('child_added', function(data) {
         // addNoteElement(data.key, data.val().text);
-        this.state.notes.push(data);
+        self.state.notes.push(data);
         // this.state.userNotesMapping
         console.log("child_added");
       });
