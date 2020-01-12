@@ -27,7 +27,6 @@ class LoginPage extends React.Component {
     this.signInEmail = this.signInEmail.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
-    this.userIsAuthenticated = this.userIsAuthenticated.bind(this);
     this.showDefault = this.showDefault.bind(this);
   }
 
@@ -39,18 +38,25 @@ class LoginPage extends React.Component {
     let self = this;
     firebase.default
       .auth()
-      .signInWithPopup(googleProvider)
-      .then(function(result) {
-        self.navigateAfterAuthenticated();
-      })
-      .catch(function(error) {
-        // TODO: error handling
-        console.log(error);
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function(){
+        firebase.default
+          .auth()
+          .signInWithPopup(googleProvider)
+          .then(function(result) {
+            self.navigateAfterAuthenticated();
+          })
+          .catch(function(error) {
+            // TODO: error handling
+            console.log(error);
+          });
       });
   }
 
   signInEmail(email, password) {
     let self = this;
+    firebase.default
+      .auth()
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function(){
     firebase.default
       .auth()
       .signInWithEmailAndPassword(email, password)
@@ -62,6 +68,7 @@ class LoginPage extends React.Component {
         // TODO: error handling
         console.log(error);
       });
+    });
   }
 
   handleLogin() {
@@ -89,11 +96,6 @@ class LoginPage extends React.Component {
       });
   }
 
-  userIsAuthenticated() {
-    let user = firebase.default.auth().currentUser;
-    return user !== null;
-  }
-
   showDefault() {
     this.setState({
       displayMode: LoginStateEnum.default
@@ -113,13 +115,7 @@ class LoginPage extends React.Component {
   }
 
   componentDidMount() {
-    if (this.userIsAuthenticated()) {
-      this.navigateAfterAuthenticated();
-    }
     googleProvider = new firebase.default.auth.GoogleAuthProvider();
-    firebase.default
-      .auth()
-      .setPersistence(firebase.auth.Auth.Persistence.LOCAL);
   }
 
   render() {

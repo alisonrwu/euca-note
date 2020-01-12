@@ -41,9 +41,8 @@ class NotesPage extends React.Component {
       let uid = user.uid;
       firebase.default.database().ref('/users/'+uid+'/notes').once("value", function(data) {
         console.log(JSON.stringify(data));
-        console.log(data.val());
         self.setState({
-          notes: (data === null) ? [] : Object.values(data.val())
+          notes: (data == null || data.val() == null) ? [] : Object.values(data.val())
         });
         console.log(self.state.notes);
       });

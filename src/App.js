@@ -9,6 +9,7 @@ import NotesPage from "./pages/NotesPage";
 import LoginPage from "./pages/LoginPage";
 
 import * as firebase from "firebase/app";
+import "firebase/auth";
 import { IconContext } from "react-icons";
 import { FiEdit2 } from 'react-icons/fi';
 import { MdPersonOutline } from 'react-icons/md';
@@ -32,6 +33,14 @@ firebase.default.initializeApp(firebaseConfig);
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { };
+  }
+
+  componentDidMount() {
+    let self = this;
+    firebase.default.auth().onAuthStateChanged(function(user) {
+      self.setState({authenticated: user});
+    });
   }
 
   render() {
@@ -39,17 +48,17 @@ class App extends React.Component {
       <Router>
         <div className="App">
           <Navbar bg="light" expand="lg">
-            <IconContext.Provider value={{ size: "1.7em", className: "global-class-name" }}>
+            {!this.state.authenticated && <IconContext.Provider value={{ size: "1.7em", className: "global-class-name" }}>
             <Nav.Link href="/login"><MdPersonOutline/></Nav.Link>
-            </IconContext.Provider>
-            <IconContext.Provider value={{ size: "1.4em", className: "global-class-name" }}>
+            </IconContext.Provider>}
+            {this.state.authenticated && <IconContext.Provider value={{ size: "1.4em", className: "global-class-name" }}>
             <Nav.Link href="/notes"><FaRegListAlt/></Nav.Link>
-            </IconContext.Provider>
+            </IconContext.Provider>}
             <IconContext.Provider value={{ size: "1.4em", className: "global-class-name" }}>
             <Nav.Link href="/"><FiEdit2/></Nav.Link>
             </IconContext.Provider>
           </Navbar>
-          <body>
+          <body className="Switch">
             <Switch>
               <Route path="/login">
                 <LoginPage />

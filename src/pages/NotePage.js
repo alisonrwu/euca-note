@@ -32,7 +32,7 @@ class NotePage extends React.Component {
 
   render() {
     return (
-      <div className="editor">
+      <div className="editor ml-3 mr-3">
         <ReactQuill theme="snow"
                     value={this.state.text} 
                     onChange={this.handleChange}
