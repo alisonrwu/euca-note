@@ -99,7 +99,7 @@ class App extends React.Component {
               <Route path="/notes">
                 <NotesPage />
               </Route>
-              <Route path="/">
+              <Route path="/:noteId?">
                 <NotePage />
               </Route>
             </Switch>

@@ -12,10 +12,15 @@ code {
     monospace;
 }
 
-html, body, #root, .App {
+html, #body, #root, .App {
   height: 100%
 }
 
 .Switch, .editor, .editor>* {
   height: 91%
+}
+
+
+.quill {
+  height: '100%';
 }
