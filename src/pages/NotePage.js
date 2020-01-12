@@ -145,9 +145,7 @@ class NotePage extends React.Component {
     console.log("Got note: " + JSON.stringify(note));
     if (note) {
       quill.setContents(note.body);
-      this.setState({
-        tags: note.tags
-      })
+      this.state.tags = note.tags;
     }
   }
 
