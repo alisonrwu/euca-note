@@ -49,7 +49,10 @@ class NotePage extends React.Component {
   }
 
   fetchRemoteDeltas() {
-    if (this.noteId == null) return;
+    if (this.noteId == null) {
+      this.props.history.push("/" + generateUUID());
+      return;
+    }
     let user = firebase.default.auth().currentUser;
     if (user != null) {
       let uid = user.uid;
@@ -73,7 +76,10 @@ class NotePage extends React.Component {
   }
 
   writeDelta(delta) {
-    if (this.noteId == null) return;
+    if (this.noteId == null) {
+      this.props.history.push("/" + generateUUID());
+      return;
+    }
     let user = firebase.default.auth().currentUser;
     console.log("Attempting to write\n");
 
@@ -114,12 +120,11 @@ class NotePage extends React.Component {
     quill = this.refs.quill.getEditor();
     this.timer = setInterval(() => this.fetchRemoteDeltas(), 1000);
     let self = this;
-    console.log("hello");
     quill.on("text-change", function(delta, oldDelta, source) {
-      console.log("quill text: " + source);
       if (source === 'silent') return;
       self.writeDelta(delta);
     });
+    quill.setSelection(0);
   }
   componentWillUnmount() {
     clearInterval(this.timer);
