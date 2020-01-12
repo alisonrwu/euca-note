@@ -72,8 +72,8 @@ class App extends React.Component {
     let self = this;
     firebase.default.auth().onAuthStateChanged(function(user) {
       self.setState({authenticated: user});
+      if (user) this.setupNotes();
     });
-    this.setupNotes();
   }
 
   render() {
