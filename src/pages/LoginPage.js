@@ -2,8 +2,10 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
+import Form from "react-bootstrap/Form";
+import Image from "react-bootstrap/Image";
+import { IoIosArrowBack } from "react-icons/io";
 import { withRouter } from "react-router-dom";
 
 import * as firebase from "firebase/app";
@@ -26,6 +28,7 @@ class LoginPage extends React.Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
     this.userIsAuthenticated = this.userIsAuthenticated.bind(this);
+    this.showDefault = this.showDefault.bind(this);
   }
 
   navigateAfterAuthenticated() {
@@ -71,6 +74,9 @@ class LoginPage extends React.Component {
     let self = this;
     let email = this.refs.registerEmailField.value;
     let password = this.refs.registerPasswordField.value;
+    let confirm = this.refs.registerPasswordConfirmField.value;
+    // TODO: error handling
+    if (password !== confirm) return;
     firebase.default
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -119,25 +125,31 @@ class LoginPage extends React.Component {
   render() {
     return (
       <div>
+        <Container>
+        <Row className="justify-content-md-center" >
         <Card className="m-5">
           {this.state.displayMode === LoginStateEnum.default ? (
             <Card.Body>
-              <h1>Sign In</h1>
+              <h3 className="text-center ml-5 mr-5 mt-5">Sign In</h3>
+              <h4 className="text-center m-4" style={{color: "grey"}}><small>Access your notes anywhere</small></h4>
               <Container>
-                <Row className="m-2 justify-content-md-center">
-                  <Button onClick={this.signInGoogle}>Google</Button>
+                <Row className="m-2">
+                  <Button variant="outline-primary" size="lg" block onClick={this.signInGoogle}>
+                    <Image className="m-1" style={{height: 25}} src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"/>
+                      Google
+                  </Button>
                 </Row>
-                <Row className="m-2 justify-content-md-center">
-                  <Button onClick={this.showEmailLogin}>Email</Button>
+                <Row className="m-2">
+                  <Button variant="outline-primary" size="lg" block onClick={this.showEmailLogin}>Email</Button>
                 </Row>
-                <Row className="m-2 justify-content-md-center">
-                  <Button onClick={this.showRegister}>Register</Button>
+                <Row className="m-2">
+                  <Button variant="outline-primary" size="lg" block onClick={this.showRegister}>Register</Button>
                 </Row>
               </Container>
             </Card.Body>
           ) : this.state.displayMode === LoginStateEnum.login ? (
             <Card.Body>
-              <h1>Email Sign In</h1>
+              <Button className="mb-3" variant="outline-primary" onClick={this.showDefault}><IoIosArrowBack/></Button>
               <Form>
                 <Form.Group controlId="formBasicEmail">
                   <Form.Label>Email address</Form.Label>
@@ -166,7 +178,7 @@ class LoginPage extends React.Component {
             </Card.Body>
           ) : (
             <Card.Body>
-              <h1>Register</h1>
+              <Button className="mb-3" variant="outline-primary" onClick={this.showDefault}><IoIosArrowBack/></Button>
               <Form>
                 <Form.Group controlId="formBasicEmail">
                   <Form.Label>Email address</Form.Label>
@@ -188,6 +200,14 @@ class LoginPage extends React.Component {
                     placeholder="Password"
                   />
                 </Form.Group>
+                <Form.Group controlId="formBasicPassword">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control
+                    ref="registerPasswordConfirmField"
+                    type="password"
+                    placeholder="Password"
+                  />
+                </Form.Group>
                 <Button variant="primary" onClick={this.handleRegister}>
                   Register
                 </Button>
@@ -195,6 +215,8 @@ class LoginPage extends React.Component {
             </Card.Body>
           )}
         </Card>
+        </Row>
+        </Container>
       </div>
     );
   }

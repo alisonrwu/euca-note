@@ -10,6 +10,22 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 
+function generateUUID() { // Public Domain/MIT
+  var d = new Date().getTime();//Timestamp
+  var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16;//random number between 0 and 16
+      if(d > 0){//Use timestamp until depleted
+          r = (d + r)%16 | 0;
+          d = Math.floor(d/16);
+      } else {//Use microseconds since page-load if supported
+          r = (d2 + r)%16 | 0;
+          d2 = Math.floor(d2/16);
+      }
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
 class NotesPage extends React.Component {
   constructor(props) {
     super(props);
@@ -46,9 +62,14 @@ class NotesPage extends React.Component {
           title: n,
           body: n,
           timestamp: Date.now(),
+          uuid: generateUUID(),
       });
       })
     }
+  }
+
+  openNote(note) {
+    this.props.history.push("/note/" + note.uuid);
   }
 
   componentDidMount() {
@@ -73,7 +94,7 @@ class NotesPage extends React.Component {
             <Col className="col-sm-4">
               <Card className="m-3">
                 <Card.Title className="m-4">{n.body}</Card.Title>
-                <Card.Body className="m-2">
+                <Card.Body className="m-2" onClick={() => this.openNote(n)}>
                   {this.truncate(n.body)}
                 </Card.Body>
               </Card>

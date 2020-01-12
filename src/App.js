@@ -9,6 +9,10 @@ import NotesPage from "./pages/NotesPage";
 import LoginPage from "./pages/LoginPage";
 
 import * as firebase from "firebase/app";
+import { IconContext } from "react-icons";
+import { FiEdit2 } from 'react-icons/fi';
+import { MdPersonOutline } from 'react-icons/md';
+import { FaRegListAlt } from 'react-icons/fa';
 
 // Set up firebase
 const firebaseConfig = {
@@ -35,9 +39,15 @@ class App extends React.Component {
       <Router>
         <div className="App">
           <Navbar bg="light" expand="lg">
-            <Nav.Link href="/login">Login</Nav.Link>
-            <Nav.Link href="/notes">Notes</Nav.Link>
-            <Nav.Link href="/">Write</Nav.Link>
+            <IconContext.Provider value={{ size: "1.7em", className: "global-class-name" }}>
+            <Nav.Link href="/login"><MdPersonOutline/></Nav.Link>
+            </IconContext.Provider>
+            <IconContext.Provider value={{ size: "1.4em", className: "global-class-name" }}>
+            <Nav.Link href="/notes"><FaRegListAlt/></Nav.Link>
+            </IconContext.Provider>
+            <IconContext.Provider value={{ size: "1.4em", className: "global-class-name" }}>
+            <Nav.Link href="/"><FiEdit2/></Nav.Link>
+            </IconContext.Provider>
           </Navbar>
           <body>
             <Switch>
