@@ -34,12 +34,30 @@ firebase.default.initializeApp(firebaseConfig);
 class App extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       notes: [],
       notesMapping: {}
     };
     this.setupNotes = this.setupNotes.bind(this);
+    this.loadNotes = this.loadNotes.bind(this);
+  }
+
+  loadNotes() {
+    console.log("Loading all notes...");
+    let self = this;
+    let user = firebase.default.auth().currentUser;
+    if (user != null) {
+      let uid = user.uid;
+      firebase.default.database().ref('/users/'+uid+'/notes')
+        .orderByKey().once("value", function(data) {
+        console.log(JSON.stringify(data));
+        console.log(data.val());
+        self.setState({
+          notes: (data === null || data.val() === null) ? [] : Object.values(data.val())
+        });
+        console.log(self.state.notes);
+      });
+    }
   }
 
   setupNotes() {
@@ -72,7 +90,10 @@ class App extends React.Component {
     let self = this;
     firebase.default.auth().onAuthStateChanged(function(user) {
       self.setState({authenticated: user});
-      if (user) self.setupNotes();
+      if (user) {
+        self.setupNotes();
+        self.loadNotes();
+      }
     });
   }
 
@@ -97,7 +118,7 @@ class App extends React.Component {
                 <LoginPage />
               </Route>
               <Route path="/notes">
-                <NotesPage />
+                <NotesPage notes={this.state.notes} />
               </Route>
               <Route path="/:noteId?">
                 <NotePage />
