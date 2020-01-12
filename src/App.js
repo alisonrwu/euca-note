@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { Navbar, NavItem } from "react-bootstrap";
+import { Nav, Navbar, NavItem } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -34,16 +34,11 @@ class App extends React.Component {
     return (
       <Router>
         <div className="App">
-          <nav>
-            <ul>
-              <li>
-                <Link to="/notes">Notes</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-            </ul>
-          </nav>
+          <Navbar bg="light" expand="lg">
+            <Nav.Link href="/login">Login</Nav.Link>
+            <Nav.Link href="/notes">Notes</Nav.Link>
+            <Nav.Link href="/">Write</Nav.Link>
+          </Navbar>
           <body>
             <Switch>
               <Route path="/login">
