@@ -1,9 +1,9 @@
 import React from 'react';
 import { withRouter } from "react-router-dom";
 
-import * as firebase from "firebase/app";
-import 'firebase/auth';
-import 'firebase/database';
+// import * as firebase from "firebase/app";
+// import 'firebase/auth';
+// import 'firebase/database';
 
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
@@ -30,42 +30,42 @@ class NotesPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = { notes: [] };
-    this.loadNotes = this.loadNotes.bind(this);
+    // this.loadNotes = this.loadNotes.bind(this);
   }
 
-  loadNotes() {
-    console.log("Reading");
-    let self = this;
-    let user = firebase.default.auth().currentUser;
-    if (user != null) {
-      let uid = user.uid;
-      firebase.default.database().ref('/users/'+uid+'/notes').once("value", function(data) {
-        console.log(JSON.stringify(data));
-        self.setState({
-          notes: (data == null || data.val() == null) ? [] : Object.values(data.val())
-        });
-        console.log(self.state.notes);
-      });
-    }
-  }
+  // loadNotes() {
+  //   console.log("Reading");
+  //   let self = this;
+  //   let user = firebase.default.auth().currentUser;
+  //   if (user != null) {
+  //     let uid = user.uid;
+  //     firebase.default.database().ref('/users/'+uid+'/notes').once("value", function(data) {
+  //       console.log(JSON.stringify(data));
+  //       console.log(data.val());
+  //       self.setState({
+  //         notes: (data === null) ? [] : Object.values(data.val())
+  //       });
+  //       console.log(self.state.notes);
+  //     });
+  //   }
+  // }
 
-  writeUserData() {
-    console.log("Writing");
-    let user = firebase.default.auth().currentUser;
-
-    if (user != null) {
-      let uid = user.uid;
-      let data = ["hello", "bello", "mello"];
-      data.forEach(n => {
-        firebase.default.database().ref('/users/'+uid+'/notes').push({
-          title: n,
-          body: n,
-          timestamp: Date.now(),
-          uuid: generateUUID(),
-      });
-      })
-    }
-  }
+  // writeUserData() {
+  //   console.log("Writing");
+  //   let user = firebase.default.auth().currentUser;
+  //   if (user != null) {
+  //     let uid = user.uid;
+  //     let data = ["hello", "bello", "mello"];
+  //     data.forEach(n => {
+  //       firebase.default.database().ref('/users/'+uid+'/notes').push({
+  //         title: n,
+  //         body: n,
+  //         timestamp: Date.now(),
+  //         uuid: generateUUID(),
+  //     });
+  //     })
+  //   }
+  // }
 
   openNote(note) {
     this.props.history.push("/note/" + note.uuid);
@@ -73,7 +73,7 @@ class NotesPage extends React.Component {
 
   componentDidMount() {
     //this.writeUserData();
-    this.loadNotes();
+    // this.loadNotes();
   }
 
   truncate(text) {

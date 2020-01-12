@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
-import { Nav, Navbar, NavItem } from "react-bootstrap";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Nav, Navbar } from "react-bootstrap";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import NotePage from "./pages/NotePage";
@@ -10,10 +10,11 @@ import LoginPage from "./pages/LoginPage";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/database";
 import { IconContext } from "react-icons";
-import { FiEdit2 } from 'react-icons/fi';
-import { MdPersonOutline } from 'react-icons/md';
-import { FaRegListAlt } from 'react-icons/fa';
+import { FiEdit2 } from "react-icons/fi";
+import { MdPersonOutline } from "react-icons/md";
+import { FaRegListAlt } from "react-icons/fa";
 
 // Set up firebase
 const firebaseConfig = {
@@ -33,7 +34,38 @@ firebase.default.initializeApp(firebaseConfig);
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { };
+
+    this.state = {
+      notes: [],
+      notesMapping: {}
+    };
+    this.setupNotes = this.setupNotes.bind(this);
+  }
+
+  setupNotes() {
+    console.log("Set event listeners for notes...");
+    let user = firebase.default.auth().currentUser;
+    if (user != null) {
+      let uid = user.uid;
+      let notesRef = firebase.default.database().ref('/users/'+uid+'/notes');
+      
+      notesRef.on('child_added', function(data) {
+        // addNoteElement(data.key, data.val().text);
+        this.state.notes.push(data);
+        // this.state.userNotesMapping
+        console.log("child_added");
+      });
+
+      notesRef.on('child_changed', function(data) {
+        // setNoteValues(postElement, data.key, data.val().text;
+        console.log("child_changed");
+      });
+      
+      notesRef.on('child_removed', function(data) {
+        // deleteNote(postElement, data.key);
+        console.log("child_removed");
+      });
+    }
   }
 
   componentDidMount() {
@@ -41,6 +73,7 @@ class App extends React.Component {
     firebase.default.auth().onAuthStateChanged(function(user) {
       self.setState({authenticated: user});
     });
+    this.setupNotes();
   }
 
   render() {
