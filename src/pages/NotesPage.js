@@ -15,7 +15,6 @@ import Quill from "quill";
 
 import { MdClear } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
-import { generateUUID } from "../helpers/uuid";
 
 let quill = null;
 class NotesPage extends React.Component {
@@ -40,8 +39,8 @@ class NotesPage extends React.Component {
           console.log(JSON.stringify(data));
           console.log(data.val());
           self.setState({
-            notes: data === null ? [] : Object.values(data.val()),
-            displayedNotes: data === null ? [] : Object.values(data.val())
+            notes: data == null || data.val() == null ? [] : Object.values(data.val()),
+            displayedNotes: data == null || data.val() == null ? [] : Object.values(data.val())
           });
           console.log(self.state.notes);
         });
@@ -122,14 +121,14 @@ class NotesPage extends React.Component {
               this.state.displayedNotes.map(n => (
                 <Col className="col-sm-4">
                   <Card className="m-3">
-                    <Card.Title className="m-4">{n.title}</Card.Title>
+                    <Card.Title className="m-4">{n.val().title}</Card.Title>
                     <Card.Body className="m-2">
                       <div onClick={() => this.openNote(n.val())}>
                         {this.truncate(this.convertDeltaToHTML(n.val().body))}
                       </div>
                       <footer className="mt-3">
                         {n.val().tags &&
-                          n.val().tags.map(t => (
+                          n.val().tags.tags.map(t => (
                             <Button
                               variant="outline-light"
                               onClick={() => this.filterNotes({ tag: t.name })}
